@@ -1,81 +1,74 @@
-"use strict";
+// const db = require('../lib/db');
+const {reponseErrorAPI} = require('../lib/reponse.js')
+const { TYPE } = require('../lib/my_error.js')
+let dbCategory = require('../models/category')
 
 module.exports = {
 	name: "category",
 
-	/**
-	 * Service settings
-	 */
 	settings: {
-
 	},
 
-	/**
-	 * Service dependencies
-	 */
 	dependencies: [],	
 
-	/**
-	 * Actions
-	 */
 	actions: {
-
-		/**
-		 * Say a 'Hello'
-		 *
-		 * @returns
-		 */
-		hello() {
-			return "Hello Moleculer";
+		async list() {
+			try {
+				let data =  await dbCategory.getList()
+				return reponseErrorAPI(true,"Success", data)	
+			} catch (error) {
+				return reponseErrorAPI(false,error.message, [])
+			}
+			
 		},
 
-		/**
-		 * Welcome a username
-		 *
-		 * @param {String} name - User name
-		 */
-		welcome: {
-			params: {
-				name: "string"
-			},
-			handler(ctx) {
-				return `Welcome, ${ctx.params.name}`;
+		remove:{
+			async handler(ctx) {
+				try {
+					let data =  await dbCategory.remove(ctx.params.id)
+					return reponseErrorAPI(true,"Success", data)	
+				} catch (error) {
+					return reponseErrorAPI(false,error.message, [])
+				}
+				return await this.removeCategoryById(ctx.params.id);
 			}
+		},
+		create: {
+			params: {
+			  name: { type: "string" },
+			  position: { type: "number", integer: true },
+			},
+			async handler(ctx) {
+				try {
+					let data = await dbCategory.insert(ctx.params.name, ctx.params.position);
+					return reponseErrorAPI(true,"Success", data)	
+				} catch (error) {
+					return reponseErrorAPI(false,error.message, [])
+				}
+			}
+		},
+
+		update: {
+			params: {
+				id: { type: "number", integer: true },
+				name: { type: "string" },
+				position: { type: "number", integer: true },
+			  },
+			  async handler(ctx) {
+				try {
+					let data = await dbCategory.update(ctx.params.id,ctx.params.name, ctx.params.position);
+					return reponseErrorAPI(true,"Success", data)	
+				} catch (error) {
+					return reponseErrorAPI(false,error.message, [])
+				}	
+			  }
 		}
 	},
-
-	/**
-	 * Events
-	 */
 	events: {
 
 	},
 
-	/**
-	 * Methods
-	 */
 	methods: {
-
 	},
 
-	/**
-	 * Service created lifecycle event handler
-	 */
-	created() {
-
-	},
-
-	/**
-	 * Service started lifecycle event handler
-	 */
-	started() {
-
-	},
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
-	stopped() {
-
-	}
 };

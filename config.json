@@ -1,0 +1,7 @@
+{
+    "VAR_HOST": "localhost",
+    "VAR_USER": "root",
+    "VAR_PASSWORD": "",
+    "VAR_DATABASE": "training",
+    "VAR_APPLICATION_NAME": "Training"
+}
